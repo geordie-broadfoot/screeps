@@ -3,9 +3,8 @@ import { HeatMap } from "utils/heatMap"
 
 export interface _CreepMemory {
   role: CreepRole
-  job?: Job
+  job: Job
   room?: string
-  working?: boolean
 }
 
 export interface _RoomMemory {
@@ -28,10 +27,9 @@ export enum CreepRole {
 
 export interface JobList {
   [index: string]: any
-  totalMiningJobs: number
-  mining?: Job[]
-  upgrading?: Job[]
-  building?: Job[]
+  mining: {[index:string]:Job}
+  upgrading: {[index:string]:Job}
+  building: {[index:string]:Job}
 }
 
 export interface MiningSpot {
