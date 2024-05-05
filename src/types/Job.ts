@@ -1,48 +1,51 @@
-export type JobType = "Mining" | "Hauling" | "Building" | "Upgrading"
-
-/*
-export interface Job {
-	id: string
-	roomName: string
-	type: JobType
-	status: string
-	description: string
-	source?: Source | AnyOwnedStructure | ConstructionSite
-	target?: AnyStructure
-	targets?: AnyStructure[]
-	controller?: StructureController
-	site?: ConstructionSite
-	dest?: RoomPosition
-	spawn?: StructureSpawn
-	path?: any
+export const JobType = {
+	Default: "Default" as const,
+	Mining: "Mining" as const,
+	Building: "Building" as const,
+	Upgrading: "Upgrading" as const,
+	Hauling: "Hauling" as const,
 }
-*/
 
-export type Job = MiningJob | HaulingJob | BuildingJob | UpgradingJob
+export type Job = DefaultJob | MiningJob | HaulingJob | BuildingJob | UpgradingJob
 
 type BaseJob = {
 	id: string
 	description?: string
-	type: JobType
 	path?: any
-	status: "init" | "loading" | "unloading"
-  roomName: string
-  sourceId: string
-  destinationId: string
+	roomName: string
+	claimedBy: string | null
 }
 
-type MiningJob = BaseJob & {
-	type: "Mining"
+export const DEFAULT_JOB: DefaultJob = {
+	id: "default-job-id",
+	description: "default-job",
+	roomName: "default-job",
+	claimedBy: null,
+	type: JobType.Default,
 }
 
-type HaulingJob = BaseJob & {
-	type: "Hauling"
+export type DefaultJob = BaseJob & {
+	type: typeof JobType.Default
 }
 
-type BuildingJob = BaseJob & {
-	type: "Building"
+export type MiningJob = BaseJob & {
+	type: typeof JobType.Mining
+	sourceId: Id<Source>
+	status: "init" | "mining" | "unloading" | "overflow"
 }
 
-type UpgradingJob = BaseJob & {
-	type: "Upgrading"
+export type HaulingJob = BaseJob & {
+	type: typeof JobType.Hauling
+	status: "init" | "pick-up" | "unloading" | "overflow"
+}
+
+export type BuildingJob = BaseJob & {
+	type: typeof JobType.Building
+	status: "init" | "loading" | "building"
+}
+
+export type UpgradingJob = BaseJob & {
+	type: typeof JobType.Upgrading
+	status: "init" | "loading" | "upgrading"
+	controllerId: Id<StructureController>
 }

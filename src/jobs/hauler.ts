@@ -1,5 +1,5 @@
+import { log } from "utils/log"
 
-
-export const doHaulerJob = (creep:Creep) => {
-    console.log(`Creep ${creep.name} doing hauler job`)
+export const doHaulerJob = (creep: Creep) => {
+	log.info(`Creep ${creep.name} doing hauler job`)
 }

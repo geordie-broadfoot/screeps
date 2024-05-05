@@ -1,28 +1,35 @@
+import { log } from "./log"
+
 export interface HeatMap {
-	pos: RoomPosition
+	//pos: RoomPosition
 	terrain: number
 	value: number
 	lastUpdate: number
 }
 
-export function updateHeatMap(creep: Creep) {
-	delete creep.room.memory.heatMap
-	if (!creep.room.memory.heatMap) {
-		//init
-		creep.room.memory.heatMap = []
-		const terrain = creep.room.getTerrain()
+export function createHeatMap(room: Room) {
+	const heatMap: HeatMap[] = []
 
-		for (let y = 0; y < 50; y++)
-			for (let x = 0; x < 50; x++) {
-				const cell: HeatMap = {
-					pos: new RoomPosition(x, y, creep.room.name),
-					terrain: terrain.get(x, y),
-					value: 0,
-					lastUpdate: Game.time,
-				}
-				if (creep.room.memory.heatMap)
-					creep.room.memory.heatMap = [...creep.room.memory.heatMap, cell]
+	const terrain = room.getTerrain()
+
+	for (let y = 0; y < 50; y++) {
+		for (let x = 0; x < 50; x++) {
+			const cell: HeatMap = {
+				//pos: new RoomPosition(x, y, room.name),
+				terrain: terrain.get(x, y),
+				value: 0,
+				lastUpdate: Game.time,
 			}
+
+			heatMap.push(cell)
+		}
+	}
+	room.memory.heatMap = heatMap
+}
+
+export function updateHeatMap(creep: Creep) {
+	if (!creep.room.memory.heatMap) {
+		createHeatMap(creep.room)
 	}
 
 	const cell = creep.room.memory.heatMap[creep.pos.y * 50 + creep.pos.x]
@@ -39,12 +46,11 @@ export function printHeatMapToTerminal(room: Room) {
 	if (!room.memory.heatMap) return
 	const roadPlan: RoomPosition[] = []
 	const scale = 1.25
-	let msg =
-		"<div style='display:flex; flex-direction: column; height:" +
-		300 * scale +
-		"px; width: " +
-		300 * scale +
-		"px;'>"
+	log.info("Printing heat map for room " + room.name)
+
+	let msg = `<div style='display:flex; flex-direction:column; height:${300 * scale}px; width:${
+		300 * scale
+	}px;'>`
 	for (let y = 0; y < 50; y++) {
 		msg += "<div style='display:flex; flex-direction: row;'>"
 		for (let x = 0; x < 50; x++) {
@@ -57,40 +63,35 @@ export function printHeatMapToTerminal(room: Room) {
 
 			if (cell.value > 0) {
 				if (Game.time - cell.lastUpdate > 500) a = "0.25"
-				if (Game.time - cell.lastUpdate > 250) a = "0.5"
-				if (Game.time - cell.lastUpdate > 100) a = "0.75"
-				if (Game.time - cell.lastUpdate > 50) a = "0.9"
-				if (Game.time - cell.lastUpdate > 10) a = "1"
+				else if (Game.time - cell.lastUpdate > 250) a = "0.5"
+				else if (Game.time - cell.lastUpdate > 100) a = "0.75"
+				else if (Game.time - cell.lastUpdate > 50) a = "0.9"
+				else if (Game.time - cell.lastUpdate > 10) a = "1"
 
 				if (cell.value < 100) color = "rgba(80, 180, 80," + a + ")"
-				if (cell.value < 80) color = "rgba(70, 150, 70," + a + ")"
-				if (cell.value < 60) color = "rgba(80, 120, 60," + a + ")"
-				if (cell.value < 40) color = "rgba(90, 100, 60," + a + ")"
-				if (cell.value < 20) color = "rgba(100, 80, 40," + a + ")"
-				if (cell.value < 10) color = "rgba(120, 40, 40," + a + ")"
+				else if (cell.value < 80) color = "rgba(70, 150, 70," + a + ")"
+				else if (cell.value < 60) color = "rgba(80, 120, 60," + a + ")"
+				else if (cell.value < 40) color = "rgba(90, 100, 60," + a + ")"
+				else if (cell.value < 20) color = "rgba(100, 80, 40," + a + ")"
+				else if (cell.value < 10) color = "rgba(120, 40, 40," + a + ")"
 			}
 
-			delete room.memory.roadPlanner
+			//delete room.memory.roadPlanner
 			if (!room.memory.roadPlanner) room.memory.roadPlanner = []
 
 			if (cell.value > 100) {
-				roadPlan.push(cell.pos)
+				//roadPlan.push(cell.pos)
 			}
-			msg +=
-				"<div style='width:" +
-				size * scale +
-				"px; height:" +
-				size * scale +
-				"px; background-color:" +
-				color +
-				"; '></div>"
+			msg += `<div style='width:${size * scale}px; height:${
+				size * scale
+			}px; background-color:${color};' onMouseOver="this.style.backgroundColor='#abe'" onMouseOut="this.style.backgroundColor='${color}'" ></div>`
 		}
 		msg += "</div>"
 	}
 	msg += "</div>"
-	console.log("roadplan", roadPlan.length)
+	//log.info("roadplan", roadPlan.length)
 	room.memory.roadPlanner = roadPlan
-	console.log(msg)
+	log.info(msg)
 }
 
 export function pruneHeatMap(room: Room) {

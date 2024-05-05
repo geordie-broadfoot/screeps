@@ -1,42 +1,46 @@
-import { Job } from "types/Job"
+import { BuildingJob, HaulingJob, Job, JobType, MiningJob, UpgradingJob } from "types/Job"
 import { HeatMap } from "utils/heatMap"
 
 export interface _CreepMemory {
-  role: CreepRole
-  job: Job
-  room?: string
+	role: keyof typeof CreepRole
+	job: Job
+	room: string
 }
 
 export interface _RoomMemory {
-  [index: string]: any
-  heatMap?: HeatMap[]
-  jobs?: JobList
-  buildOrders?: string[]
-  roadPlanner?: RoomPosition[]
-  sources?: MiningSpot[]
+	heatMap: HeatMap[]
+	jobs: JobList
+	buildOrders: string[]
+	roadPlanner: RoomPosition[]
+	sources: MiningSpot[]
+	energyReservations: {
+		[sinkId: string]: {
+			[creepId: string]: number
+		}
+	}
 }
 
 export enum CreepRole {
-  All,
-  Miner,
-  Hauler,
-  Fighter,
-  Upgrader,
-  Builder
+	All = "All",
+	Miner = "Miner",
+	Hauler = "Hauler",
+	Fighter = "Fighter",
+	Upgrader = "Upgrader",
+	Builder = "Builder",
 }
 
 export interface JobList {
-  [index: string]: any
-  mining: {[index:string]:Job}
-  upgrading: {[index:string]:Job}
-  building: {[index:string]:Job}
+	[JobType.Mining]: { [index: string]: MiningJob }
+	[JobType.Upgrading]: { [index: string]: UpgradingJob }
+	[JobType.Building]: { [index: string]: BuildingJob }
+	[JobType.Hauling]: { [index: string]: HaulingJob }
 }
 
 export interface MiningSpot {
-  sourceId: string
-  pos: RoomPosition
-  spots: RoomPosition[]
-  hasDedicatedMiner: boolean
-  hasContainer: boolean
-  containerId: string
+	sourceId: string
+	pos: RoomPosition
+	spots: RoomPosition[]
+	hasDedicatedMiner: boolean
+	hasContainer: boolean
+	containerId: string
 }

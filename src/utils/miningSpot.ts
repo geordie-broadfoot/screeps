@@ -60,7 +60,7 @@ function findBestContainerLocation(spot: MiningSpot) {
 
 	const candidates = []
 	let min = 100
-	// Find possible spots
+	// Find possible placements on a 5x5 ring around source
 	for (let y = spot.pos.y - 2, row = 0; y < spot.pos.y + 2; y++, row++)
 		for (let x = spot.pos.x - 2, col = 0; x < spot.pos.x + 2; x++, col++) {
 			if (row > 0 && row < 4 && col > 0 && col < 4) continue
@@ -88,6 +88,7 @@ function findBestContainerLocation(spot: MiningSpot) {
 	for (let i = 0; i < candidates.length; i++)
 		if (candidates[i].points > maxScore) maxScore = candidates[i].points
 
+	// Select closest tile with most adjacent mining spots
 	const finalLocation = candidates.filter((c) => c.points === maxScore)[0]
 
 	room.createConstructionSite(finalLocation.pos.x, finalLocation.pos.y, STRUCTURE_CONTAINER)
