@@ -2,19 +2,30 @@ import { doJob, handleDeadCreep } from "controllers/creep"
 import { processRoom } from "controllers/room"
 import { ErrorMapper } from "utils/ErrorMapper"
 import { CreepRole, _CreepMemory, _RoomMemory } from "./types/memory"
-import { log } from "utils/log"
+import { LogLevel, log } from "utils/log"
 import { updateHeatMap } from "utils/heatMap"
 declare global {
 	// export interface Memory extends _Memory {}
 	export interface CreepMemory extends _CreepMemory {}
 	export interface RoomMemory extends _RoomMemory {}
+	export interface Memory extends _Memory {}
 
-	// Syntax for adding proprties to `global` (ex "global.log")
+	type _Memory = {
+		global: {
+			logLevel: LogLevel
+		}
+	}
+
 	namespace NodeJS {
 		interface Global {
 			uuid(): string
+			logLevel: LogLevel
 		}
 	}
+}
+
+Memory.global = {
+	logLevel: "warn",
 }
 
 // Start of core loop

@@ -1,12 +1,10 @@
 import { releaseJob } from "controllers/creep"
-import { DEFAULT_JOB, JobType } from "types/Job"
+import { JobType } from "types/Job"
 import { CreepRole } from "types/memory"
 import { log } from "utils/log"
 
 export const doMinerJob = (creep: Creep) => {
-	//log.info(`Creep ${creep.name} doing miner job`)
-
-	const roomMemory = Game.rooms[creep.memory.room].memory
+	log.debug(`Creep ${creep.name} doing miner job`)
 
 	const job = creep.memory.job
 
