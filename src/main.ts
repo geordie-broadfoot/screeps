@@ -1,9 +1,10 @@
-import { doJob, handleDeadCreep } from "controllers/creep"
+import { doJob } from "controllers/creep"
 import { processRoom } from "controllers/room"
 import { ErrorMapper } from "utils/ErrorMapper"
 import { CreepRole, _CreepMemory, _RoomMemory } from "./types/memory"
 import { LogLevel, log } from "utils/log"
 import { updateHeatMap } from "utils/heatMap"
+import { handleDeadCreep } from "utils/deadCreep"
 declare global {
 	// export interface Memory extends _Memory {}
 	export interface CreepMemory extends _CreepMemory {}

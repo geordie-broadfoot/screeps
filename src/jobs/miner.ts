@@ -1,6 +1,6 @@
-import { releaseJob } from "controllers/creep"
 import { JobType } from "types/Job"
 import { CreepRole } from "types/memory"
+import { releaseJob } from "utils/deadCreep"
 import { log } from "utils/log"
 
 export const doMinerJob = (creep: Creep) => {

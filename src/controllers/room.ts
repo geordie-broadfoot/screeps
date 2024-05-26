@@ -23,6 +23,8 @@ export function processRoom(room: Room, roomProps: any) {
 			}
 	}
 
+	checkForCompletedStructures(room)
+
 	const creeps = room.find(FIND_MY_CREEPS)
 	const spawns = room.find(FIND_MY_SPAWNS)
 	const extensions = room.find(FIND_STRUCTURES, {
@@ -155,4 +157,15 @@ function createBuildJobs(room: Room): { [index: string]: BuildingJob } {
 	})
 
 	return jobs
+}
+
+/**
+ * Checks for when structures are finished construction. Relevant structures will be added to the rooms memory
+ */
+function checkForCompletedStructures(room: Room) {
+	const buildEvents = room.getEventLog().filter((event) => event.event === EVENT_BUILD)
+
+	for (const event of buildEvents) {
+		event.event
+	}
 }

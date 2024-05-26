@@ -71,37 +71,6 @@ function findJobsByRole(room: Room, role: keyof typeof CreepRole): Job[] {
 	}
 }
 
-export function handleDeadCreep(creep: CreepMemory) {
-	releaseJob(creep)
-}
-
-export function releaseJob(creepMemory: CreepMemory) {
-	const job = creepMemory.job
-
-	if (job.type === DEFAULT_JOB.type) return
-
-	const room = Game.rooms[job.roomName]
-	// Push creep's job back into array for that type
-	room.memory.jobs[job.type][job.id].claimedBy = null
-	creepMemory.job = DEFAULT_JOB
-}
-
-// function findEnergySinks(room: Room, filter?: any): [] {
-// 	let sources = room
-// 		.find(FIND_MY_STRUCTURES)
-// 		.filter(
-// 			(s) =>
-// 				(s.structureType === "spawn" ||
-// 					s.structureType === "tower" ||
-// 					s.structureType === "container" ||
-// 					s.structureType === "extension" ||
-// 					s.structureType === "storage") &&
-// 				(filter?.(s) ?? true)
-// 		) as []
-
-// 	return sources
-// }
-
 // function findEnergySources(room: Room, filter?: any) {
 // 	let sources = room
 // 		.find(FIND_STRUCTURES)
